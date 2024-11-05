@@ -316,7 +316,7 @@ pub struct TfmxPlayer {
     ch_on: [bool; MAX_CHANNELS as usize],
 }
 
-// It indexes into small arrays under 255 size
+/// Max value is [`MAX_SONGS`] - 1
 type SongIdx = u8;
 
 /// Function for handling new sample data coming from the player
