@@ -461,16 +461,16 @@ fn get_track_step(
                 }
             }
         } else {
-            for x in 0..usize::from(MAX_CHANNELS) {
-                pdb.p[x].xpose = (l[x] & 0xff) as i8;
-                pdb.p[x].num = (l[x] >> 8) as u8;
-                let y = pdb.p[x].num;
+            for (pdb, l) in pdb.p.iter_mut().zip(l) {
+                pdb.xpose = (l & 0xff) as i8;
+                pdb.num = (l >> 8) as u8;
+                let y = pdb.num;
                 if y < 0x80 {
-                    pdb.p[x].step = 0;
-                    pdb.p[x].wait = 0;
-                    pdb.p[x].loop_ = 0xffff;
+                    pdb.step = 0;
+                    pdb.wait = 0;
+                    pdb.loop_ = 0xffff;
                     let patterns = &editbuf[patterns_idx..];
-                    pdb.p[x].addr = patterns[usize::from(y)];
+                    pdb.addr = patterns[usize::from(y)];
                 }
             }
             return;
