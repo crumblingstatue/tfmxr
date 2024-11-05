@@ -1,0 +1,22 @@
+[package]
+name = "tfmxr"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-2.0"
+
+[dependencies]
+bytemuck = { version = "1.19.0", features = [
+    "latest_stable_rust",
+    "extern_crate_alloc",
+] }
+log = "0.4.22"
+thiserror = "1.0.68"
+
+[dev-dependencies]
+anyhow = "1.0.91"
+env_logger = { version = "0.11.5", default-features = false }
+clap = { version = "4.5.20", default-features = false, features = ["std", "help", "derive"] }
+console = { version = "0.15.8", default-features = false }
+
+[profile.release]
+strip = true
