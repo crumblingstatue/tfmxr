@@ -527,7 +527,7 @@ fn do_track(
                 p.wait = word.byte::<3>();
                 *word.byte_mut::<3>() = 0;
             }
-            *word.byte_mut::<0>() = ((i32::from(t) + i32::from(p.xpose)) & 0x3F) as u8;
+            *word.byte_mut::<0>() = t.wrapping_add_signed(p.xpose) & 0x3F;
             if (t & 0xC0) == 0xC0 {
                 {
                     *word.byte_mut::<0>() |= 0xC0;
