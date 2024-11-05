@@ -9,7 +9,7 @@ const BUFSIZE: usize = 16_384;
 const HALFBUFSIZE: usize = BUFSIZE / 2;
 
 pub(crate) struct AudioCtx {
-    buf: Box<[u8; BUFSIZE]>,
+    buf: Box<[i16; BUFSIZE]>,
     bhead: usize,
     btail: usize,
     blocksize: usize,
@@ -24,7 +24,7 @@ type TBuf = [i32; BUFSIZE];
 
 impl AudioCtx {
     pub(crate) fn new() -> Self {
-        let multiplier = 4;
+        let multiplier = 2;
         Self {
             buf: bytemuck::allocation::zeroed_box(),
             bhead: 0,
@@ -158,7 +158,7 @@ fn conv_s16(ctx: &mut AudioCtx) {
         stereo_blend(ctx);
     }
 
-    let buf: &mut [i16] = bytemuck::cast_slice_mut(&mut ctx.buf[ctx.bhead..]);
+    let buf = &mut ctx.buf[ctx.bhead..];
     for i in 0..num {
         buf[i * 2] = ctx.tbuf[i + HALFBUFSIZE] as i16;
         buf[i * 2 + 1] = ctx.tbuf[i] as i16;

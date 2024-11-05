@@ -73,7 +73,7 @@ fn main() {
                 // 2 channels, s16le
                 total / (args.sample_rate as usize * 2 * 2)
             );
-            match stdin.write_all(samples) {
+            match stdin.write_all(bytemuck::cast_slice(samples)) {
                 Ok(()) => {
                     if let Ok(msg) = recv.try_recv() {
                         match msg {

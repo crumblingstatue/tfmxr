@@ -52,7 +52,7 @@ fn main() {
                 // 44khz, 2 channels, s16le
                 total / (44_100 * 2 * 2)
             );
-            match lock.write_all(samples) {
+            match lock.write_all(bytemuck::cast_slice(samples)) {
                 Ok(()) => {
                     if let Ok(msg) = recv.try_recv() {
                         match msg {

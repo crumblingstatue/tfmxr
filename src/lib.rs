@@ -324,7 +324,7 @@ pub struct TfmxPlayer {
 type SongIdx = u8;
 
 /// Function for handling new sample data coming from the player
-pub trait NewDataFn = FnMut(&[u8]) -> NewDataCtlFlow;
+pub trait NewDataFn = FnMut(&[i16]) -> NewDataCtlFlow;
 /// Whether to stop playing, or continue playing, with an optional [`PlayerCmd`]
 pub type NewDataCtlFlow = ControlFlow<(), Option<PlayerCmd>>;
 
