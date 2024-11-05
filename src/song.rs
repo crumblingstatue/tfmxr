@@ -521,13 +521,13 @@ fn do_track(
         let p_step = p.step;
         p.step += 1;
         let mut word = U32Be::from_be(editbuf[p.addr as usize + p_step as usize]);
-        let mut t: i32 = i32::from(word.byte::<0>());
+        let mut t = word.byte::<0>();
         if t < 0xF0 {
             if (t & 0xC0) == 0x80 {
                 p.wait = word.byte::<3>();
                 *word.byte_mut::<3>() = 0;
             }
-            *word.byte_mut::<0>() = ((t + i32::from(p.xpose)) & 0x3F) as u8;
+            *word.byte_mut::<0>() = ((i32::from(t) + i32::from(p.xpose)) & 0x3F) as u8;
             if (t & 0xC0) == 0xC0 {
                 {
                     *word.byte_mut::<0>() |= 0xC0;
@@ -640,7 +640,7 @@ fn do_track(
 
             11 => {
                 // PPat
-                t = i32::from(word.byte::<2>() & 0x07);
+                t = word.byte::<2>() & 0x07;
                 pdb.p[t as usize].num = word.byte::<1>();
                 pdb.p[t as usize].addr = patterns[word.byte::<1>() as usize];
                 pdb.p[t as usize].xpose = word.byte::<3>() as i8;
