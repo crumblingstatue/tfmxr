@@ -177,7 +177,7 @@ pub(crate) fn try_to_makeblock(
     tfmx: &mut TfmxCtx,
     smplbuf: &[i8],
     ch_on: [bool; MAX_CHANNELS as usize],
-) -> i32 {
+) -> Option<u32> {
     let mut r = 0;
 
     while available_sound_data(audio) < BUFSIZE / 2 && tfmx.mdb.player_enable {
@@ -209,11 +209,7 @@ pub(crate) fn try_to_makeblock(
         }
     }
 
-    if tfmx.mdb.player_enable {
-        r
-    } else {
-        -1
-    }
+    tfmx.mdb.player_enable.then_some(r)
 }
 
 const fn available_sound_data(ctx: &AudioCtx) -> usize {

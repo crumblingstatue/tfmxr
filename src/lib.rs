@@ -113,15 +113,18 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
             &mut player.tfmx,
             &player.sample_buf,
             player.ch_on,
-        ) != 0
-        {}
+        ) != Some(0)
+        {
+            log::trace!("Making some blocks...");
+        }
         while try_to_makeblock(
             &player.header,
             &mut audio,
             &mut player.tfmx,
             &player.sample_buf,
             player.ch_on,
-        ) >= 0
+        )
+        .is_some()
         {
             match present_output(&mut audio, &mut handler) {
                 ControlFlow::Continue(cmd) => {
