@@ -162,8 +162,6 @@ fn conv_s16(ctx: &mut AudioCtx) {
     for i in 0..num {
         buf[i * 2] = ctx.tbuf[i + HALFBUFSIZE] as i16;
         buf[i * 2 + 1] = ctx.tbuf[i] as i16;
-    }
-    for i in 0..num {
         ctx.tbuf[i] = 0;
         ctx.tbuf[i + HALFBUFSIZE] = 0;
     }
