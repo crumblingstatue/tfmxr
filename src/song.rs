@@ -463,15 +463,15 @@ fn get_track_step(
         } else {
             let mut x = 0;
             while x < 8 {
-                pdb.p[x as usize].xpose = (i32::from(l[x as usize]) & 0xff) as i8;
-                pdb.p[x as usize].num = (i32::from(l[x as usize]) >> 8) as u8;
-                let y = i32::from(pdb.p[x as usize].num);
+                pdb.p[x].xpose = (i32::from(l[x]) & 0xff) as i8;
+                pdb.p[x].num = (i32::from(l[x]) >> 8) as u8;
+                let y = i32::from(pdb.p[x].num);
                 if y < 0x80 {
-                    pdb.p[x as usize].step = 0;
-                    pdb.p[x as usize].wait = 0;
-                    pdb.p[x as usize].loop_ = 0xffff;
+                    pdb.p[x].step = 0;
+                    pdb.p[x].wait = 0;
+                    pdb.p[x].loop_ = 0xffff;
                     let patterns = &editbuf[patterns_idx..];
-                    pdb.p[x as usize].addr = patterns[y as usize];
+                    pdb.p[x].addr = patterns[y as usize];
                 }
                 x += 1;
             }
