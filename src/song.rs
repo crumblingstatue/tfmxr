@@ -366,7 +366,7 @@ fn run_macro(
                 c.macro_step = word.hi();
             }
             Action::CLoop2 => {
-                c.macro_num = macros[word.byte::<1>() as usize] as u16;
+                c.macro_num = macros[usize::from(word.byte::<1>())] as u16;
                 c.macro_ptr = u32::from(c.macro_num);
                 c.macro_step = word.hi();
                 c.loop_ = -1;
@@ -583,13 +583,13 @@ fn do_track(
                 p.ro_addr = p.addr as u16;
                 p.ro_step = p.step;
                 // repeated fallthrough code
-                p.addr = patterns[word.byte::<1>() as usize];
+                p.addr = patterns[usize::from(word.byte::<1>())];
                 p.step = word.hi();
             }
 
             2 => {
                 // Cont
-                p.addr = patterns[word.byte::<1>() as usize];
+                p.addr = patterns[usize::from(word.byte::<1>())];
                 p.step = word.hi();
             }
 
@@ -642,7 +642,7 @@ fn do_track(
                 // PPat
                 t = word.byte::<2>() & 0x07;
                 pdb.p[t as usize].num = word.byte::<1>();
-                pdb.p[t as usize].addr = patterns[word.byte::<1>() as usize];
+                pdb.p[t as usize].addr = patterns[usize::from(word.byte::<1>())];
                 pdb.p[t as usize].xpose = word.byte::<3>() as i8;
                 pdb.p[t as usize].step = 0;
                 pdb.p[t as usize].wait = 0;
