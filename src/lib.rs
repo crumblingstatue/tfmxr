@@ -167,7 +167,7 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
                 }
                 ControlFlow::Break(()) => {
                     log::info!("Stopping playback on request.");
-                    break;
+                    break 'do_over;
                 }
             }
         }
