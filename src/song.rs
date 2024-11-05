@@ -955,7 +955,7 @@ fn do_tracks(tfmx: &mut TfmxCtx, track_start: usize, macros_start: usize, patter
         }
 
         let mut x = 0;
-        while x < MAX_CHANNELS as usize {
+        while x < usize::from(MAX_CHANNELS) {
             if do_track(
                 x,
                 track_start,
