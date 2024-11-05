@@ -497,24 +497,24 @@ fn do_track(
     patterns_idx: usize,
     idb: &mut Idb,
     hdb_arr: &mut HdbArr,
-) -> i32 {
+) -> bool {
     let patterns = &editbuf[patterns_idx..];
     let p: &mut Pdb = &mut pdb.p[p_idx];
     if p.num == 0xFE {
         p.num += 1;
         channel_off((p.xpose & 0xF) as usize, cdb, hdb_arr);
-        return 0;
+        return false;
     }
     if p.addr == 0 {
-        return 0;
+        return false;
     }
     if p.num >= 0x90 {
-        return 0;
+        return false;
     }
     let p_wait = p.wait;
     p.wait = p.wait.wrapping_sub(1);
     if p_wait != 0 {
-        return 0;
+        return false;
     }
     loop {
         let p: &mut Pdb = &mut pdb.p[p_idx];
@@ -537,7 +537,7 @@ fn do_track(
                 note_port(word.whole(), cdb, *multimode, danger_freak_hack, macros);
             }
             if (t & 0xC0) == 0x80 {
-                return 0;
+                return false;
             }
             continue;
         }
@@ -565,7 +565,7 @@ fn do_track(
                     multimode,
                     patterns_idx,
                 );
-                return 1;
+                return true;
             }
             1 => 'blk: {
                 if p.loop_ == 0 {
@@ -596,7 +596,7 @@ fn do_track(
             3 => {
                 // Wait
                 p.wait = word.byte::<1>();
-                return 0;
+                return false;
             }
 
             14 => {
@@ -604,13 +604,13 @@ fn do_track(
                 mdb.play_patt_flag = 0;
                 // repeated fallthrough code
                 p.num = 0xFF;
-                return 0;
+                return false;
             }
 
             4 => {
                 // Stop
                 p.num = 0xFF;
-                return 0;
+                return false;
             }
 
             5 | 6 | 7 | 12 => {
@@ -972,8 +972,7 @@ fn do_tracks(tfmx: &mut TfmxCtx, track_start: usize, macros_start: usize, patter
                 patterns_start,
                 idb,
                 hdb,
-            ) != 0
-            {
+            ) {
                 x = 0;
                 continue;
             }
