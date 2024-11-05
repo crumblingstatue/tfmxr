@@ -462,8 +462,8 @@ fn get_track_step(
             }
         } else {
             for x in 0..usize::from(MAX_CHANNELS) {
-                pdb.p[x].xpose = (i32::from(l[x]) & 0xff) as i8;
-                pdb.p[x].num = (i32::from(l[x]) >> 8) as u8;
+                pdb.p[x].xpose = (l[x] & 0xff) as i8;
+                pdb.p[x].num = (l[x] >> 8) as u8;
                 let y = pdb.p[x].num;
                 if y < 0x80 {
                     pdb.p[x].step = 0;
