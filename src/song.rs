@@ -70,7 +70,6 @@ fn run_macro(
     editbuf: &EditBuf,
     gemx: bool,
     danger_freak_hack: bool,
-    temp_vol: &mut i8,
     cdb_arr: &mut CdbArr,
     multimode: bool,
     macros: &[u32],
@@ -201,11 +200,11 @@ fn run_macro(
             }
             13 => {
                 if i32::from(word.byte::<2>()) != 0xfe {
-                    *temp_vol = (i32::from(c.velocity) * 3 + i32::from(word.byte::<3>())) as i8;
-                    if i32::from(*temp_vol) > 0x40 {
+                    let vol = (i32::from(c.velocity) * 3 + i32::from(word.byte::<3>())) as i8;
+                    if vol > 0x40 {
                         c.cur_vol = 0x40;
                     } else {
-                        c.cur_vol = *temp_vol;
+                        c.cur_vol = vol;
                     }
                     continue;
                 }
@@ -863,7 +862,6 @@ fn do_macro(cdb_idx: usize, macros_start: usize, tfmx: &mut TfmxCtx) {
         ref mut mdb,
         ref mut cdb,
         ref mut idb,
-        ref mut temp_vol,
         multimode,
         ref mut hdb,
         ..
@@ -902,7 +900,6 @@ fn do_macro(cdb_idx: usize, macros_start: usize, tfmx: &mut TfmxCtx) {
             editbuf,
             gemx,
             danger_freak_hack,
-            temp_vol,
             cdb,
             multimode,
             &editbuf[macros_start..],
