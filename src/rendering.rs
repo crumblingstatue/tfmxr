@@ -5,7 +5,7 @@ use {
     std::ops::ControlFlow,
 };
 
-const BUFSIZE: usize = 131_072 * 4;
+const BUFSIZE: usize = 16_384;
 const HALFBUFSIZE: usize = BUFSIZE / 2;
 
 pub(crate) struct AudioCtx {
