@@ -648,7 +648,8 @@ fn do_track(
                 pdb.p[t as usize].wait = 0;
                 pdb.p[t as usize].loop_ = 0xFFFF;
             }
-            _ => todo!(),
+            // We covered all possible values for the bitmask
+            _ => unreachable!(),
         }
     }
 }
