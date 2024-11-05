@@ -378,7 +378,7 @@ fn run_macro(
 #[expect(clippy::too_many_arguments)]
 fn get_track_step(
     track_start: usize,
-    pdb: &mut Pdblk,
+    pdblk: &mut Pdblk,
     loops: &mut i32,
     jiffies: &mut i32,
     mdb: &mut Mdb,
@@ -388,7 +388,7 @@ fn get_track_step(
     patterns_idx: usize,
 ) {
     loop {
-        if pdb.curr_pos == pdb.first_pos && *loops <= 0 {
+        if pdblk.curr_pos == pdblk.first_pos && *loops <= 0 {
             if *loops < 0 {
                 mdb.player_enable = false;
                 return;
@@ -396,7 +396,7 @@ fn get_track_step(
             *loops -= 1;
         }
         let l: &[u16] = bytemuck::cast_slice(
-            &editbuf[track_start.wrapping_add(usize::from(pdb.curr_pos) * 4)..],
+            &editbuf[track_start.wrapping_add(usize::from(pdblk.curr_pos) * 4)..],
         );
         *jiffies = 0;
         if l[0] == 0xeffe {
@@ -417,17 +417,17 @@ fn get_track_step(
                     mdb.track_loop -= 1;
                     if track_loop == 0 {
                         mdb.track_loop = -1;
-                        pdb.curr_pos = pdb.curr_pos.wrapping_add(1);
+                        pdblk.curr_pos = pdblk.curr_pos.wrapping_add(1);
                     } else {
                         if mdb.track_loop < 0 {
                             mdb.track_loop = l[3] as i16;
                         }
-                        pdb.curr_pos = l[2];
+                        pdblk.curr_pos = l[2];
                     }
                 }
                 2 => {
-                    pdb.prescale = l[2];
-                    mdb.speed_cnt = pdb.prescale;
+                    pdblk.prescale = l[2];
+                    mdb.speed_cnt = pdblk.prescale;
                     let x;
                     if l[3] & 0xf200 == 0 && {
                         x = i32::from(i32::from(l[3]) & 0x1ff > 0xf);
@@ -436,7 +436,7 @@ fn get_track_step(
                         *e_clocks = (0x001b_51f8 / x) as u32;
                         mdb.cia_save = *e_clocks as u16;
                     }
-                    pdb.curr_pos = pdb.curr_pos.wrapping_add(1);
+                    pdblk.curr_pos = pdblk.curr_pos.wrapping_add(1);
                 }
                 3 => {
                     let mut x = i32::from(l[3]);
@@ -450,18 +450,18 @@ fn get_track_step(
                         mdb.cia_save = *e_clocks as u16;
                         *multimode = true;
                     }
-                    pdb.curr_pos = pdb.curr_pos.wrapping_add(1);
+                    pdblk.curr_pos = pdblk.curr_pos.wrapping_add(1);
                 }
                 4 => {
                     do_fade(i32::from(l[2]) & 0xff, i32::from(l[3]) & 0xff, mdb);
-                    pdb.curr_pos = pdb.curr_pos.wrapping_add(1);
+                    pdblk.curr_pos = pdblk.curr_pos.wrapping_add(1);
                 }
                 _ => {
-                    pdb.curr_pos = pdb.curr_pos.wrapping_add(1);
+                    pdblk.curr_pos = pdblk.curr_pos.wrapping_add(1);
                 }
             }
         } else {
-            for (pdb, l) in pdb.p.iter_mut().zip(l) {
+            for (pdb, l) in pdblk.p.iter_mut().zip(l) {
                 pdb.xpose = (l & 0xff) as i8;
                 pdb.num = (l >> 8) as u8;
                 let pat_idx = pdb.num;
