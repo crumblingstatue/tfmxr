@@ -461,8 +461,7 @@ fn get_track_step(
                 }
             }
         } else {
-            let mut x = 0;
-            while x < 8 {
+            for x in 0..usize::from(MAX_CHANNELS) {
                 pdb.p[x].xpose = (i32::from(l[x]) & 0xff) as i8;
                 pdb.p[x].num = (i32::from(l[x]) >> 8) as u8;
                 let y = i32::from(pdb.p[x].num);
@@ -473,7 +472,6 @@ fn get_track_step(
                     let patterns = &editbuf[patterns_idx..];
                     pdb.p[x].addr = patterns[y as usize];
                 }
-                x += 1;
             }
             return;
         }
