@@ -50,7 +50,6 @@ struct TfmxCtx {
     single_file: bool,
     ntfhd_offset: u32,
     out_rate: u32,
-    mlen: u32,
     editbuf: Box<EditBuf>,
     gemx: bool,
     loops: i32,
@@ -77,7 +76,6 @@ impl TfmxCtx {
             oops_up_hack: false,
             single_file: false,
             ntfhd_offset: 0,
-            mlen: 0,
             gemx: false,
             loops: 0,
             hdb: [Hdb::default(); MAX_CHANNELS as usize],
@@ -195,7 +193,6 @@ fn load_mdat(mdat_path: &Path, tfmx: &mut TfmxCtx) -> Result<Header, MdatLoadErr
     let &mut TfmxCtx {
         single_file,
         ntfhd_offset,
-        ref mut mlen,
         ref mut editbuf,
         ..
     } = tfmx;
@@ -205,7 +202,6 @@ fn load_mdat(mdat_path: &Path, tfmx: &mut TfmxCtx) -> Result<Header, MdatLoadErr
     }
     let header = Header::from_reader(&mut f)?;
     let n = f.read(bytemuck::bytes_of_mut(&mut **editbuf))? / size_of::<u32>();
-    *mlen = n as u32;
     editbuf[n] = u32::MAX;
     if n < 127 {
         return Err(MdatLoadError::EditBufferTooSmall { size: n });
@@ -215,7 +211,7 @@ fn load_mdat(mdat_path: &Path, tfmx: &mut TfmxCtx) -> Result<Header, MdatLoadErr
         let y = u32::from_be(editbuf[z])
             .checked_sub(0x200)
             .ok_or(MdatLoadError::PreprocessError)?;
-        if (y & 3) != 0 || (y >> 2) > *mlen {
+        if (y & 3) != 0 || (y >> 2) > n as u32 {
             log::debug!("Counted {i} macros.");
             break;
         }
@@ -226,7 +222,7 @@ fn load_mdat(mdat_path: &Path, tfmx: &mut TfmxCtx) -> Result<Header, MdatLoadErr
         let y = u32::from_be(editbuf[z])
             .checked_sub(0x200)
             .ok_or(MdatLoadError::PreprocessError)?;
-        if (y & 3) != 0 || (y >> 2) > *mlen {
+        if (y & 3) != 0 || (y >> 2) > n as u32 {
             log::debug!("Counted {i} patterns.");
             break;
         }
