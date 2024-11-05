@@ -167,7 +167,6 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
                 }
             }
         }
-        let _ = present_output(&mut audio, handler);
         break;
     }
 }
