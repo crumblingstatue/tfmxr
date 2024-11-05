@@ -20,3 +20,4 @@ console = { version = "0.15.8", default-features = false }
 
 [profile.release]
 strip = true
+panic = "abort"
