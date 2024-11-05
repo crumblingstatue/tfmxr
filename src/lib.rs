@@ -102,6 +102,10 @@ impl TfmxCtx {
 
 fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
     'do_over: loop {
+        if player.song_idx >= MAX_SONGS {
+            log::info!("Reached maximum number of songs, ending play loop.");
+            break;
+        }
         let mut audio = AudioCtx::new();
         player.tfmx = player.clean_tfmx.clone();
         player.tfmx.init();
