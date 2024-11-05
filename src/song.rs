@@ -464,13 +464,13 @@ fn get_track_step(
             for x in 0..usize::from(MAX_CHANNELS) {
                 pdb.p[x].xpose = (i32::from(l[x]) & 0xff) as i8;
                 pdb.p[x].num = (i32::from(l[x]) >> 8) as u8;
-                let y = i32::from(pdb.p[x].num);
+                let y = pdb.p[x].num;
                 if y < 0x80 {
                     pdb.p[x].step = 0;
                     pdb.p[x].wait = 0;
                     pdb.p[x].loop_ = 0xffff;
                     let patterns = &editbuf[patterns_idx..];
-                    pdb.p[x].addr = patterns[y as usize];
+                    pdb.p[x].addr = patterns[usize::from(y)];
                 }
             }
             return;
