@@ -167,7 +167,7 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
                 }
             }
         }
-        break;
+        player.song_idx += 1;
     }
 }
 
