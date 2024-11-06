@@ -264,7 +264,7 @@ fn mix(hw: &mut Hdb, iterations: usize, out_buf: &mut [i32], smplbuf: &[i8], cdb
     let mut pos: u32 = hw.pos;
     let volume = i32::from(hw.vol.min(0x40));
     let mut delta: u32 = hw.delta;
-    let mut len: u32 = u32::from(hw.slen) << 14;
+    let mut len: u32 = u32::from(hw.slen) << FRACTION_BITS;
 
     /* This used to have (p==&smplbuf).  Broke with GrandMonsterSlam */
     if (((hw.mode) & 1) == 0) || (len < 0x10000) {
@@ -274,7 +274,7 @@ fn mix(hw: &mut Hdb, iterations: usize, out_buf: &mut [i32], smplbuf: &[i8], cdb
         hw.sbeg = hw.sample_start;
         p = &smplbuf[hw.sample_start..hw.sample_start + hw.sample_len as usize];
         hw.slen = hw.sample_len;
-        len = u32::from(hw.sample_len) << 14;
+        len = u32::from(hw.sample_len) << FRACTION_BITS;
         pos = 0;
         hw.mode |= 2;
     }
@@ -298,7 +298,7 @@ fn mix(hw: &mut Hdb, iterations: usize, out_buf: &mut [i32], smplbuf: &[i8], cdb
         pos -= len;
         p = &smplbuf[hw.sample_start..hw.sample_start + hw.sample_len as usize];
         hw.slen = hw.sample_len;
-        len = u32::from(hw.sample_len) << 14;
+        len = u32::from(hw.sample_len) << FRACTION_BITS;
         if (len < 0x10000) || ((hw.loop_fn)(hw, cdb_arr) == 0) {
             delta = 0;
             pos = 0;
