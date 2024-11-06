@@ -288,8 +288,9 @@ fn mix(hw: &mut Hdb, iterations: usize, out_buf: &mut [i32], smplbuf: &[i8], cdb
         } else {
             i32::from(smplbuf[hw.sample_start])
         };
-        *sample += volume
-            * (v1 + (((v2 - v1) * (pos & u32::from(FRACTION_MASK)) as i32) >> FRACTION_BITS));
+        let base_sample =
+            v1 + (((v2 - v1) * (pos & u32::from(FRACTION_MASK)) as i32) >> FRACTION_BITS);
+        *sample += volume * base_sample;
         pos += delta;
 
         if pos < len {
