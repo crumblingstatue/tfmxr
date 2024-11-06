@@ -17,7 +17,7 @@ pub(crate) struct AudioCtx {
     e_rem: usize,
     blend: bool,
     tbuf: Box<TBuf>,
-    bytes_done: usize,
+    samples_done: usize,
 }
 
 type TBuf = [i32; BUFSIZE];
@@ -34,7 +34,7 @@ impl AudioCtx {
             e_rem: 0,
             blend: true,
             tbuf: bytemuck::allocation::zeroed_box(),
-            bytes_done: 0,
+            samples_done: 0,
         }
     }
 
@@ -139,7 +139,7 @@ fn mixit(
 
 /// Perform stereo blending to make headphone listening experience less weird
 fn stereo_blend(audio: &mut AudioCtx) {
-    for i in 0..audio.bytes_done {
+    for i in 0..audio.samples_done {
         let buf = &mut audio.tbuf[i..];
         let y = ((buf[HALFBUFSIZE] * 11) + ((buf[0]) * 5)) >> 4;
         buf[0] = ((buf[HALFBUFSIZE] * 5) + ((buf[0]) * 11)) >> 4;
@@ -148,7 +148,7 @@ fn stereo_blend(audio: &mut AudioCtx) {
 }
 
 fn conv_s16(ctx: &mut AudioCtx) {
-    let num = ctx.bytes_done;
+    let num = ctx.samples_done;
 
     // there should always be enough space for conversion since buffer is only
     // filled half so abort in this case. We could wait here instead.
@@ -190,18 +190,18 @@ pub(crate) fn try_to_makeblock(
             audio.e_rem -= WHAT;
         }
         while nb > 0 {
-            let mut n = audio.blocksize - audio.bytes_done;
+            let mut n = audio.blocksize - audio.samples_done;
             if n > nb {
                 n = nb;
             }
-            mixit(n, audio.bytes_done, tfmx, audio, smplbuf, ch_on);
-            audio.bytes_done += n;
+            mixit(n, audio.samples_done, tfmx, audio, smplbuf, ch_on);
+            audio.samples_done += n;
             nb -= n;
 
             // convert full blocksize or partial block at end of player
-            if audio.bytes_done == audio.blocksize || !tfmx.mdb.player_enable {
+            if audio.samples_done == audio.blocksize || !tfmx.mdb.player_enable {
                 conv_s16(audio);
-                audio.bytes_done = 0;
+                audio.samples_done = 0;
                 r += 1;
             }
         }
