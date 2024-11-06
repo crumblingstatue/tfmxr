@@ -262,7 +262,6 @@ fn mix(hw: &mut Hdb, iterations: usize, out_buf: &mut [i32], smplbuf: &[i8], cdb
     }
     let mut p: &[i8] = &smplbuf[hw.sbeg..end_idx];
     let mut pos: u32 = hw.pos;
-    let mut pos_real: u32;
     let volume = i32::from(hw.vol.min(0x40));
     let mut delta: u32 = hw.delta;
     let mut len: u32 = u32::from(hw.slen) << 14;
@@ -281,7 +280,7 @@ fn mix(hw: &mut Hdb, iterations: usize, out_buf: &mut [i32], smplbuf: &[i8], cdb
     }
 
     for sample in out_buf.iter_mut().take(iterations) {
-        pos_real = pos >> FRACTION_BITS;
+        let pos_real = pos >> FRACTION_BITS;
         let v1 = i32::from(p[pos_real as usize]);
         let v2 = if pos_real + 1 < u32::from(hw.slen) {
             i32::from(p[pos_real as usize + 1])
