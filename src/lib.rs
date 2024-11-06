@@ -142,6 +142,9 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
                                 player.song_idx += 1;
                                 continue 'do_over;
                             }
+                            PlayerCmd::RestartSong => {
+                                continue 'do_over;
+                            }
                             PlayerCmd::ToggleBlend => {
                                 audio.toggle_blend();
                                 let on_off = if audio.is_blend_on() { "on" } else { "off" };
@@ -334,6 +337,8 @@ pub enum PlayerCmd {
     Prev,
     /// Switch to next subsong
     Next,
+    /// Restart current song
+    RestartSong,
     /// Toggle stereo blending
     ToggleBlend,
     /// Mute/unmute audio channel marked by the index

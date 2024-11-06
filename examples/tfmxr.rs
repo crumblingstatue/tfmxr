@@ -74,6 +74,7 @@ fn main() {
             Ok(ch) => match ch {
                 '<' => send.send(Msg::Cmd(PlayerCmd::Prev)).unwrap(),
                 '>' => send.send(Msg::Cmd(PlayerCmd::Next)).unwrap(),
+                'r' => send.send(Msg::Cmd(PlayerCmd::RestartSong)).unwrap(),
                 'q' => {
                     send.send(Msg::End).unwrap();
                     th_handle.join().unwrap();
