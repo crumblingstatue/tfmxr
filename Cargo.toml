@@ -10,7 +10,7 @@ bytemuck = { version = "1.19.0", features = [
     "extern_crate_alloc",
 ] }
 log = "0.4.22"
-thiserror = "1.0.68"
+thiserror = "2.0"
 
 [dev-dependencies]
 anyhow = "1.0.91"
