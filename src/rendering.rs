@@ -92,13 +92,6 @@ fn mixit(
                 &mut tfmx.cdb,
             );
         }
-        let mut y: &mut [i32] = &mut audio.tbuf[HALFBUFSIZE + tbuf_offset..];
-        let mut x = 0;
-        while x < iterations {
-            y[0] = y[0].clamp(-16383, 16383);
-            x += 1;
-            y = &mut y[1..];
-        }
     } else if ch_on[3] {
         mix(
             &mut tfmx.hdb[3],
