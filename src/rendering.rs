@@ -299,7 +299,7 @@ fn mix(hw: &mut Hdb, iterations: usize, out_buf: &mut [i32], smplbuf: &[i8], cdb
         p = &smplbuf[hw.sample_start..hw.sample_start + hw.sample_len as usize];
         hw.slen = hw.sample_len;
         len = u32::from(hw.sample_len) << 14;
-        if ((len) < 0x10000) || ((hw.loop_fn.unwrap())(hw, cdb_arr) == 0) {
+        if (len < 0x10000) || ((hw.loop_fn.unwrap())(hw, cdb_arr) == 0) {
             delta = 0;
             pos = 0;
             hw.slen = 0;
