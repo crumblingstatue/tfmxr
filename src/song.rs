@@ -47,7 +47,7 @@ impl TfmxCtx {
             hw.sample_start = 0;
             hw.sample_len = 2;
             hw.slen = 2;
-            hw.loop_fn = Some(loop_off);
+            hw.loop_fn = loop_off;
             c.hw_idx = i;
             c.macro_wait = 0;
             c.macro_run = 0;
@@ -165,7 +165,7 @@ fn run_macro(
             }
             26 => {
                 let hw = &mut hdb_arr[c.hw_idx];
-                hw.loop_fn = Some(loop_on);
+                hw.loop_fn = loop_on;
                 hw.cdb_idx = Some(c_idx);
                 c.wait_dma_count = word.hi();
                 c.macro_run = 0;
@@ -327,7 +327,7 @@ fn run_macro(
         match action {
             Action::HwMod => {
                 let hw = &mut hdb_arr[c.hw_idx];
-                hw.loop_fn = Some(loop_off);
+                hw.loop_fn = loop_off;
                 if word.byte::<1>() == 0 {
                     hw.mode = 0;
                     if c.new_style_macro != 0 {
@@ -1007,7 +1007,7 @@ pub(crate) fn channel_off(cdb_idx: usize, cdb_arr: &mut CdbArr, hdb_arr: &mut Hd
         let hw = &mut hdb_arr[c.hw_idx];
         hw.mode = 0;
         hw.vol = 0;
-        hw.loop_fn = Some(loop_off);
+        hw.loop_fn = loop_off;
         hw.cdb_idx = Some(cdb_idx);
     }
 }
@@ -1026,7 +1026,7 @@ fn loop_on(hdb: &mut Hdb, cdb_arr: &mut CdbArr) -> i32 {
     if wait_dma != 0 {
         return 1;
     }
-    hdb.loop_fn = Some(loop_off);
+    hdb.loop_fn = loop_off;
     c.macro_run = -1;
     1
 }
@@ -1305,7 +1305,7 @@ pub(crate) struct Hdb {
     pub(crate) sample_start: usize,
     pub(crate) vol: u8,
     pub(crate) mode: u8,
-    pub(crate) loop_fn: Option<fn(&mut Hdb, &mut CdbArr) -> i32>,
+    pub(crate) loop_fn: fn(&mut Hdb, &mut CdbArr) -> i32,
     pub(crate) cdb_idx: Option<usize>,
 }
 impl Hdb {
@@ -1319,7 +1319,7 @@ impl Hdb {
             sample_start: 0,
             vol: 0,
             mode: 0,
-            loop_fn: None,
+            loop_fn: loop_off,
             cdb_idx: None,
         }
     }
