@@ -96,6 +96,9 @@ fn main() {
                 '<' => send.send(Msg::Cmd(PlayerCmd::Prev)).unwrap(),
                 '>' => send.send(Msg::Cmd(PlayerCmd::Next)).unwrap(),
                 'r' => send.send(Msg::Cmd(PlayerCmd::RestartSong)).unwrap(),
+                'l' => send
+                    .send(Msg::Cmd(PlayerCmd::ToggleLoopCurrentSong))
+                    .unwrap(),
                 'q' => {
                     send.send(Msg::End).unwrap();
                     th_handle.join().unwrap();

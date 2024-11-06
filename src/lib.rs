@@ -147,8 +147,7 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
                             }
                             PlayerCmd::ToggleBlend => {
                                 audio.toggle_blend();
-                                let on_off = if audio.is_blend_on() { "on" } else { "off" };
-                                log::info!("Stereo blend {on_off}");
+                                log::info!("Stereo blend {}", audio.is_blend_on().on_off());
                             }
                             PlayerCmd::ToggleCh(ch_idx) => {
                                 match player.ch_on.get_mut(ch_idx as usize) {
@@ -165,6 +164,13 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
                                     }
                                 }
                             }
+                            PlayerCmd::ToggleLoopCurrentSong => {
+                                player.loop_current_song ^= true;
+                                log::info!(
+                                    "Loop current song {}",
+                                    player.loop_current_song.on_off()
+                                );
+                            }
                         }
                     }
                 }
@@ -174,7 +180,23 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
                 }
             }
         }
-        player.song_idx += 1;
+        if !player.loop_current_song {
+            player.song_idx += 1;
+        }
+    }
+}
+
+trait BoolExt {
+    fn on_off(self) -> &'static str;
+}
+
+impl BoolExt for bool {
+    fn on_off(self) -> &'static str {
+        if self {
+            "on"
+        } else {
+            "off"
+        }
     }
 }
 
@@ -309,6 +331,7 @@ impl PlayerBuilder {
             sample_buf: bytemuck::cast_vec(sample_buf),
             song_idx: self.song_index,
             ch_on: [true; MAX_CHANNELS as usize],
+            loop_current_song: false,
         })
     }
 }
@@ -321,6 +344,7 @@ pub struct TfmxPlayer {
     sample_buf: Vec<i8>,
     song_idx: SongIdx,
     ch_on: [bool; MAX_CHANNELS as usize],
+    loop_current_song: bool,
 }
 
 /// Max value is [`MAX_SONGS`] - 1
@@ -343,6 +367,8 @@ pub enum PlayerCmd {
     ToggleBlend,
     /// Mute/unmute audio channel marked by the index
     ToggleCh(u8),
+    /// Toggle whether to loop the current song
+    ToggleLoopCurrentSong,
 }
 
 impl TfmxPlayer {
