@@ -9,15 +9,26 @@ bytemuck = { version = "1.19.0", features = [
     "latest_stable_rust",
     "extern_crate_alloc",
 ] }
-log = "0.4.22"
 thiserror = "2.0"
+log.workspace = true
 
 [dev-dependencies]
-anyhow = "1.0.91"
-env_logger = { version = "0.11.5", default-features = false }
-clap = { version = "4.5.20", default-features = false, features = ["std", "help", "derive"] }
-console = { version = "0.15.8", default-features = false }
+anyhow.workspace = true
+env_logger.workspace = true
+clap.workspace = true
+console.workspace = true
 
 [profile.release]
 strip = true
 panic = "abort"
+
+[workspace]
+members = ["crates/etfmxr"]
+
+[workspace.dependencies]
+anyhow = "1.0.91"
+env_logger = { version = "0.11.5", default-features = false }
+clap = { version = "4.5.20", default-features = false, features = ["std", "help", "derive"] }
+console = { version = "0.15.8", default-features = false }
+cpal = "0.15.3"
+log = "0.4.22"

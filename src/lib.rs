@@ -356,6 +356,7 @@ pub trait NewDataFn = FnMut(&[i16]) -> NewDataCtlFlow;
 pub type NewDataCtlFlow = ControlFlow<(), Option<PlayerCmd>>;
 
 /// A command telling the player to do something
+#[derive(Debug)]
 pub enum PlayerCmd {
     /// Switch to previous subsong
     Prev,
