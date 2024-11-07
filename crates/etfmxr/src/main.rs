@@ -80,6 +80,7 @@ impl EtfmxrApp {
     }
 
     fn play_song(&mut self, path: std::path::PathBuf) {
+        self.stop_playback.store(false, Ordering::SeqCst);
         let mut player = match PlayerBuilder::new(path.to_str().unwrap()).build() {
             Ok(player) => player,
             Err(e) => {
