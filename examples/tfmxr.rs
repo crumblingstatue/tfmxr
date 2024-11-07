@@ -43,7 +43,7 @@ fn main() {
             .unwrap();
         let stdout = std::io::stdout();
         let mut lock = stdout.lock();
-        player.play(|samples| {
+        player.play(|samples, _player| {
             total += samples.len();
             eprint!(
                 "[tfmxr] ({:.02}) {} bytes rendered (approx {} seconds)\r",

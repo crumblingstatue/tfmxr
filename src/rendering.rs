@@ -1,6 +1,7 @@
 use {
     crate::{
-        header::Header, song::tfmx_irq_in, CdbArr, Hdb, NewDataCtlFlow, TfmxCtx, MAX_CHANNELS,
+        header::Header, song::tfmx_irq_in, CdbArr, Hdb, NewDataCtlFlow, TfmxCtx, TfmxPlayer,
+        MAX_CHANNELS,
     },
     std::ops::ControlFlow,
 };
@@ -210,6 +211,7 @@ const fn available_sound_data(ctx: &AudioCtx) -> usize {
 
 #[must_use]
 pub(crate) fn present_output(
+    player: &mut TfmxPlayer,
     ctx: &mut AudioCtx,
     mut handler: impl crate::NewDataFn,
 ) -> NewDataCtlFlow {
@@ -221,7 +223,7 @@ pub(crate) fn present_output(
             len = BUFSIZE - ctx.btail;
         }
         let end_idx = (ctx.bhead + len).min(ctx.buf.len());
-        cmd = handler(&ctx.buf[ctx.bhead..end_idx])?;
+        cmd = handler(&ctx.buf[ctx.bhead..end_idx], player)?;
 
         ctx.btail = (ctx.btail + len) % BUFSIZE;
 

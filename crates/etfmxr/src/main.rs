@@ -53,6 +53,12 @@ struct EtfmxrApp {
     /// Buffer of rendered samples
     rendered_buffer: Arc<Mutex<Vec<i16>>>,
     stop_playback: Arc<AtomicBool>,
+    player_status: Arc<Mutex<PlayerStatus>>,
+}
+
+#[derive(Default)]
+pub struct PlayerStatus {
+    current_song_idx: u8,
 }
 
 impl EtfmxrApp {
@@ -65,6 +71,7 @@ impl EtfmxrApp {
             pl_msg_send: None,
             rendered_buffer: Arc::new(Mutex::new(Vec::new())),
             stop_playback: Arc::new(AtomicBool::new(false)),
+            player_status: Arc::default(),
         };
         if let Some(path) = mdat_path {
             this.play_song(path.into());
@@ -84,8 +91,13 @@ impl EtfmxrApp {
         let (send, recv) = std::sync::mpsc::sync_channel(1);
         let (pl_send, pl_recv) = std::sync::mpsc::channel();
         self.pl_msg_send = Some(pl_send);
+        let player_status = self.player_status.clone();
         std::thread::spawn(move || {
-            player.play(|new| {
+            player.play(|new, player| {
+                {
+                    let mut status = player_status.lock().unwrap();
+                    status.current_song_idx = player.current_song_index();
+                }
                 if let Err(e) = send.send(new.to_vec()) {
                     log::error!("Send error: {e}");
                     return ControlFlow::Break(());
@@ -137,6 +149,7 @@ impl EtfmxrApp {
 
 impl eframe::App for EtfmxrApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        ctx.request_repaint();
         if self.stop_playback.load(Ordering::Relaxed) {
             self.cpal_stream = None;
             self.pl_msg_send = None;
@@ -146,6 +159,9 @@ impl eframe::App for EtfmxrApp {
             if ui.button("Open file").clicked() || (ctrl && key_o) {
                 self.file_dialog.select_file();
             }
+            let status = self.player_status.lock().unwrap();
+            let active_track = status.current_song_idx;
+            ui.label(format!("Active track: {active_track}"));
         });
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| match self.pl_msg_send.as_mut() {

@@ -64,7 +64,7 @@ fn main() {
             handle.wait().unwrap();
             return;
         };
-        player.play(|samples| {
+        player.play(|samples, _player| {
             total += samples.len();
             eprint!(
                 "[tfmxr] ({:.02}) {} bytes rendered (approx {} seconds)\r",

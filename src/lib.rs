@@ -130,7 +130,7 @@ fn play_loop(player: &mut TfmxPlayer, mut handler: impl NewDataFn) {
         )
         .is_some()
         {
-            match present_output(&mut audio, &mut handler) {
+            match present_output(player, &mut audio, &mut handler) {
                 ControlFlow::Continue(cmd) => {
                     if let Some(cmd) = cmd {
                         match cmd {
@@ -351,7 +351,7 @@ pub struct TfmxPlayer {
 type SongIdx = u8;
 
 /// Function for handling new sample data coming from the player
-pub trait NewDataFn = FnMut(&[i16]) -> NewDataCtlFlow;
+pub trait NewDataFn = FnMut(&[i16], &mut TfmxPlayer) -> NewDataCtlFlow;
 /// Whether to stop playing, or continue playing, with an optional [`PlayerCmd`]
 pub type NewDataCtlFlow = ControlFlow<(), Option<PlayerCmd>>;
 
@@ -379,5 +379,10 @@ impl TfmxPlayer {
             log::info!("{row}");
         }
         play_loop(self, handler);
+    }
+    /// Returns the index of the currently active song
+    #[must_use]
+    pub const fn current_song_index(&self) -> SongIdx {
+        self.song_idx
     }
 }

@@ -16,7 +16,7 @@ fn main() {
     let begin = std::time::Instant::now();
     eprintln!("Let's-a-go!");
     let mut song_total = 0;
-    player.play(|samples| {
+    player.play(|samples, _player| {
         song_total += samples.len();
         let realtime = begin.elapsed().as_secs_f32();
         // 44khz, 2 channels, s16le
