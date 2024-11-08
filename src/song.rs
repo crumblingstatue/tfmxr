@@ -37,7 +37,7 @@ mod u32be {
 }
 
 impl TfmxCtx {
-    pub(crate) fn prepare(&mut self) {
+    pub fn prepare(&mut self) {
         self.mdb.player_enable = false;
         for (i, (hw, c)) in self.hdb.iter_mut().zip(self.cdb.iter_mut()).enumerate() {
             hw.mode = 0;
@@ -993,7 +993,7 @@ fn do_all_macros(tfmx: &mut TfmxCtx, macros_start: usize) {
     do_macro(3, macros_start, tfmx);
 }
 
-pub(crate) fn channel_off(cdb_idx: usize, cdb_arr: &mut CdbArr, hdb_arr: &mut HdbArr) {
+pub fn channel_off(cdb_idx: usize, cdb_arr: &mut CdbArr, hdb_arr: &mut HdbArr) {
     let c = &mut cdb_arr[cdb_idx];
     if c.sfx_flag == 0 {
         c.add_begin_time = 0;
@@ -1012,7 +1012,7 @@ pub(crate) fn channel_off(cdb_idx: usize, cdb_arr: &mut CdbArr, hdb_arr: &mut Hd
     }
 }
 
-pub(crate) fn loop_off(_hdb: &mut Hdb, _cdb_arr: &mut CdbArr) -> i32 {
+pub fn loop_off(_hdb: &mut Hdb, _cdb_arr: &mut CdbArr) -> i32 {
     1
 }
 
@@ -1031,7 +1031,7 @@ fn loop_on(hdb: &mut Hdb, cdb_arr: &mut CdbArr) -> i32 {
     1
 }
 
-pub(crate) fn tfmx_irq_in(header: &Header, tfmx: &mut TfmxCtx) {
+pub fn tfmx_irq_in(header: &Header, tfmx: &mut TfmxCtx) {
     if !tfmx.mdb.player_enable {
         return;
     }
@@ -1046,7 +1046,7 @@ pub(crate) fn tfmx_irq_in(header: &Header, tfmx: &mut TfmxCtx) {
     }
 }
 
-pub(crate) fn start_song(song: SongIdx, mode: i32, header: &Header, tfmx: &mut TfmxCtx) {
+pub fn start_song(song: SongIdx, mode: i32, header: &Header, tfmx: &mut TfmxCtx) {
     let &mut TfmxCtx {
         ref editbuf,
         ref mut loops,
@@ -1102,7 +1102,7 @@ pub(crate) fn start_song(song: SongIdx, mode: i32, header: &Header, tfmx: &mut T
 }
 
 #[derive(Debug, Copy, Clone)]
-pub(crate) struct Cdb {
+pub struct Cdb {
     macro_run: i8,
     efx_run: i8,
     new_style_macro: u8,
@@ -1151,7 +1151,8 @@ pub(crate) struct Cdb {
 }
 
 impl Cdb {
-    pub(crate) const fn default() -> Self {
+    #[must_use]
+    pub const fn default() -> Self {
         Self {
             macro_run: 0,
             efx_run: 0,
@@ -1203,18 +1204,19 @@ impl Cdb {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub(crate) struct Idb {
+pub struct Idb {
     cue: [u16; 4usize],
 }
 impl Idb {
-    pub(crate) const fn default() -> Self {
+    #[must_use]
+    pub const fn default() -> Self {
         Self { cue: [0; 4] }
     }
 }
 
 #[derive(Debug, Copy, Clone)]
-pub(crate) struct Mdb {
-    pub(crate) player_enable: bool,
+pub struct Mdb {
+    pub player_enable: bool,
     end_flag: bool,
     curr_song: i8,
     speed_cnt: u16,
@@ -1228,7 +1230,8 @@ pub(crate) struct Mdb {
     track_loop: i16,
 }
 impl Mdb {
-    pub(crate) const fn default() -> Self {
+    #[must_use]
+    pub const fn default() -> Self {
         Self {
             player_enable: false,
             end_flag: false,
@@ -1247,9 +1250,9 @@ impl Mdb {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub(crate) struct Pdb {
-    pub(crate) addr: u32,
-    pub(crate) num: u8,
+pub struct Pdb {
+    pub addr: u32,
+    pub num: u8,
     xpose: i8,
     loop_: u16,
     step: u16,
@@ -1273,18 +1276,19 @@ impl Pdb {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub(crate) struct Pdblk {
+pub struct Pdblk {
     first_pos: u16,
     last_pos: u16,
     curr_pos: u16,
     prescale: u16,
-    pub(crate) p: PdbArr,
+    pub p: PdbArr,
 }
 
 type PdbArr = [Pdb; MAX_CHANNELS as usize];
 
 impl Pdblk {
-    pub(crate) const fn default() -> Self {
+    #[must_use]
+    pub const fn default() -> Self {
         Self {
             first_pos: 0,
             last_pos: 0,
@@ -1296,20 +1300,21 @@ impl Pdblk {
 }
 
 #[derive(Debug, Copy, Clone)]
-pub(crate) struct Hdb {
-    pub(crate) pos: u32,
-    pub(crate) delta: u32,
-    pub(crate) slen: u16,
-    pub(crate) sample_len: u16,
-    pub(crate) sbeg: usize,
-    pub(crate) sample_start: usize,
-    pub(crate) vol: u8,
-    pub(crate) mode: u8,
-    pub(crate) loop_fn: fn(&mut Hdb, &mut CdbArr) -> i32,
-    pub(crate) cdb_idx: Option<usize>,
+pub struct Hdb {
+    pub pos: u32,
+    pub delta: u32,
+    pub slen: u16,
+    pub sample_len: u16,
+    pub sbeg: usize,
+    pub sample_start: usize,
+    pub vol: u8,
+    pub mode: u8,
+    pub loop_fn: fn(&mut Hdb, &mut CdbArr) -> i32,
+    pub cdb_idx: Option<usize>,
 }
 impl Hdb {
-    pub(crate) const fn default() -> Self {
+    #[must_use]
+    pub const fn default() -> Self {
         Self {
             pos: 0,
             delta: 0,

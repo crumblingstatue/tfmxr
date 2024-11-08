@@ -12,6 +12,9 @@ pub struct Header {
 }
 
 impl Header {
+    /// # Errors
+    ///
+    /// WIP
     pub fn from_reader<R: std::io::Read>(reader: &mut R) -> Result<Self, MdatLoadError> {
         let mut img: HeaderImage = bytemuck::zeroed();
         reader.read_exact(bytemuck::bytes_of_mut(&mut img))?;

@@ -6,11 +6,11 @@
     trivial_casts,
     trivial_numeric_casts,
     clippy::pedantic,
-    clippy::nursery,
-    missing_docs
+    clippy::nursery
 )]
 // TODO: Fix these lints
 #![expect(
+    missing_docs,
     clippy::cast_possible_truncation,
     clippy::cast_possible_wrap,
     clippy::cast_sign_loss
@@ -23,9 +23,9 @@
     clippy::cognitive_complexity
 )]
 
-mod header;
-mod rendering;
-mod song;
+pub mod header;
+pub mod rendering;
+pub mod song;
 
 use std::{
     fs::File,
@@ -44,28 +44,28 @@ const MAX_SONGS: u8 = 32;
 const MAX_CHANNELS: u8 = 8;
 
 #[derive(Debug, Clone)]
-struct TfmxCtx {
-    danger_freak_hack: bool,
-    oops_up_hack: bool,
-    single_file: bool,
-    ntfhd_offset: u32,
-    out_rate: u32,
-    editbuf: Box<EditBuf>,
-    gemx: bool,
-    loops: i32,
-    hdb: HdbArr,
-    mdb: Mdb,
-    cdb: CdbArr,
-    pdblk: Pdblk,
-    idb: Idb,
-    jiffies: i32,
-    multimode: bool,
-    e_clocks: u32,
+pub struct TfmxCtx {
+    pub danger_freak_hack: bool,
+    pub oops_up_hack: bool,
+    pub single_file: bool,
+    pub ntfhd_offset: u32,
+    pub out_rate: u32,
+    pub editbuf: Box<EditBuf>,
+    pub gemx: bool,
+    pub loops: i32,
+    pub hdb: HdbArr,
+    pub mdb: Mdb,
+    pub cdb: CdbArr,
+    pub pdblk: Pdblk,
+    pub idb: Idb,
+    pub jiffies: i32,
+    pub multimode: bool,
+    pub e_clocks: u32,
 }
 
-type CdbArr = [Cdb; 16];
-type HdbArr = [Hdb; MAX_CHANNELS as usize];
-type EditBuf = [u32; 16384];
+pub type CdbArr = [Cdb; 16];
+pub type HdbArr = [Hdb; MAX_CHANNELS as usize];
+pub type EditBuf = [u32; 16384];
 
 impl TfmxCtx {
     fn new(sample_rate: u32) -> Self {
@@ -89,7 +89,7 @@ impl TfmxCtx {
         }
     }
 
-    fn init(&mut self) {
+    pub fn init(&mut self) {
         self.prepare();
         for ch_idx in 0..MAX_CHANNELS as usize {
             self.hdb[ch_idx].cdb_idx = Some(ch_idx);
@@ -338,13 +338,13 @@ impl PlayerBuilder {
 
 /// TFMX player
 pub struct TfmxPlayer {
-    clean_tfmx: TfmxCtx,
-    tfmx: TfmxCtx,
-    header: Header,
-    sample_buf: Vec<i8>,
-    song_idx: SongIdx,
-    ch_on: [bool; MAX_CHANNELS as usize],
-    loop_current_song: bool,
+    pub clean_tfmx: TfmxCtx,
+    pub tfmx: TfmxCtx,
+    pub header: Header,
+    pub sample_buf: Vec<i8>,
+    pub song_idx: SongIdx,
+    pub ch_on: [bool; MAX_CHANNELS as usize],
+    pub loop_current_song: bool,
 }
 
 /// Max value is [`MAX_SONGS`] - 1

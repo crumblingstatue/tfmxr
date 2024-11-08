@@ -6,25 +6,32 @@ use {
     std::ops::ControlFlow,
 };
 
-const BUFSIZE: usize = 16_384;
-const HALFBUFSIZE: usize = BUFSIZE / 2;
+pub const BUFSIZE: usize = 16_384;
+pub const HALFBUFSIZE: usize = BUFSIZE / 2;
 
-pub(crate) struct AudioCtx {
-    buf: Box<[i16; BUFSIZE]>,
-    bhead: usize,
-    btail: usize,
-    blocksize: usize,
-    multiplier: usize,
-    e_rem: usize,
-    blend: bool,
-    tbuf: Box<TBuf>,
-    samples_done: usize,
+pub struct AudioCtx {
+    pub buf: Box<[i16; BUFSIZE]>,
+    pub bhead: usize,
+    pub btail: usize,
+    pub blocksize: usize,
+    pub multiplier: usize,
+    pub e_rem: usize,
+    pub blend: bool,
+    pub tbuf: Box<TBuf>,
+    pub samples_done: usize,
 }
 
 type TBuf = [i32; BUFSIZE];
 
+impl Default for AudioCtx {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AudioCtx {
-    pub(crate) fn new() -> Self {
+    #[must_use]
+    pub fn new() -> Self {
         let multiplier = 2;
         Self {
             buf: bytemuck::allocation::zeroed_box(),
@@ -163,7 +170,7 @@ fn conv_s16(ctx: &mut AudioCtx) {
     ctx.bhead = (ctx.bhead + (num * ctx.multiplier)) % BUFSIZE;
 }
 
-pub(crate) fn try_to_makeblock(
+pub fn try_to_makeblock(
     header: &Header,
     audio: &mut AudioCtx,
     tfmx: &mut TfmxCtx,
@@ -204,7 +211,8 @@ pub(crate) fn try_to_makeblock(
     tfmx.mdb.player_enable.then_some(r)
 }
 
-const fn available_sound_data(ctx: &AudioCtx) -> usize {
+#[must_use]
+pub const fn available_sound_data(ctx: &AudioCtx) -> usize {
     let l = ctx.bhead.abs_diff(ctx.btail) + BUFSIZE;
     l % BUFSIZE
 }
