@@ -34,6 +34,7 @@ use std::{
     path::Path,
 };
 
+use egui_inspect::derive::Inspect;
 use header::Header;
 use rendering::{present_output, try_to_makeblock, AudioCtx};
 use song::{Cdb, Hdb, Idb, Mdb, Pdblk};
@@ -43,7 +44,7 @@ const TEXT_ROWS: u8 = 6;
 const MAX_SONGS: u8 = 32;
 const MAX_CHANNELS: u8 = 8;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Inspect)]
 pub struct TfmxCtx {
     pub danger_freak_hack: bool,
     pub oops_up_hack: bool,
@@ -337,6 +338,7 @@ impl PlayerBuilder {
 }
 
 /// TFMX player
+#[derive(Debug, Inspect)]
 pub struct TfmxPlayer {
     pub clean_tfmx: TfmxCtx,
     pub tfmx: TfmxCtx,

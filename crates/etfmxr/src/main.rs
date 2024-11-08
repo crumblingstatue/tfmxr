@@ -6,6 +6,7 @@ use {
     },
     eframe::egui,
     egui_file_dialog::FileDialog,
+    egui_inspect::Inspect,
     std::sync::{
         atomic::{AtomicBool, Ordering},
         Arc, Mutex,
@@ -169,34 +170,40 @@ impl eframe::App for EtfmxrApp {
             }
         });
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.horizontal(|ui| match &mut self.player {
-                Some(player) => {
-                    let player = &mut *player.lock().unwrap();
-                    if ui.button("⏮").on_hover_text("Previous track").clicked() {
-                        player.song_idx -= 1;
-                        player.tfmx = player.clean_tfmx.clone();
-                        player.tfmx.init();
-                        song::start_song(player.song_idx, 0, &player.header, &mut player.tfmx);
-                    }
-                    let label = if self.cpal_stream.is_some() {
-                        "⏹"
-                    } else {
-                        "▶"
-                    };
-                    if ui.button(label).clicked() {
-                        self.stop_playback.store(true, Ordering::Relaxed);
-                    }
-                    if ui.button("⏭").on_hover_text("Next track").clicked() {
-                        player.song_idx += 1;
-                        player.tfmx = player.clean_tfmx.clone();
-                        player.tfmx.init();
-                        song::start_song(player.song_idx, 0, &player.header, &mut player.tfmx);
-                    }
+            let Some(player) = &mut self.player else {
+                ui.label("Player inactive");
+                return;
+            };
+            let player = &mut *player.lock().unwrap();
+            ui.horizontal(|ui| {
+                if ui.button("⏮").on_hover_text("Previous track").clicked() {
+                    player.song_idx -= 1;
+                    player.tfmx = player.clean_tfmx.clone();
+                    player.tfmx.init();
+                    song::start_song(player.song_idx, 0, &player.header, &mut player.tfmx);
                 }
-                None => {
-                    ui.label("No connection to player");
+                let label = if self.cpal_stream.is_some() {
+                    "⏹"
+                } else {
+                    "▶"
+                };
+                if ui.button(label).clicked() {
+                    self.stop_playback.store(true, Ordering::Relaxed);
+                }
+                if ui.button("⏭").on_hover_text("Next track").clicked() {
+                    player.song_idx += 1;
+                    player.tfmx = player.clean_tfmx.clone();
+                    player.tfmx.init();
+                    song::start_song(player.song_idx, 0, &player.header, &mut player.tfmx);
                 }
             });
+            ui.separator();
+            egui::ScrollArea::vertical()
+                .auto_shrink(false)
+                .show(ui, |ui| {
+                    ui.label("What the fuck");
+                    player.inspect_mut(ui, 0);
+                });
         });
         self.file_dialog.update(ctx);
         if let Some(path) = self.file_dialog.take_selected() {

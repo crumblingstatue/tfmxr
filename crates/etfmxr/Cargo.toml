@@ -12,3 +12,4 @@ env_logger.workspace = true
 log.workspace = true
 clap.workspace = true
 tfmxr.path = "../../"
+egui-inspect.workspace = true

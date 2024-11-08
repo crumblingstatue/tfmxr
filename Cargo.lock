@@ -1084,6 +1084,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "egui-inspect"
+version = "0.1.0"
+source = "git+https://github.com/crumblingstatue/egui-inspect.git#4a93ef6e38f5eb88ab474dfb2dd69815ef22562c"
+dependencies = [
+ "egui",
+ "egui-inspect-derive",
+]
+
+[[package]]
+name = "egui-inspect-derive"
+version = "0.1.0"
+source = "git+https://github.com/crumblingstatue/egui-inspect.git#4a93ef6e38f5eb88ab474dfb2dd69815ef22562c"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.87",
+]
+
+[[package]]
 name = "egui-wgpu"
 version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1258,6 +1277,7 @@ dependencies = [
  "cpal",
  "eframe",
  "egui-file-dialog",
+ "egui-inspect",
  "env_logger",
  "log",
  "tfmxr",
@@ -3030,6 +3050,7 @@ dependencies = [
  "bytemuck",
  "clap",
  "console",
+ "egui-inspect",
  "env_logger",
  "log",
  "thiserror 2.0.0",

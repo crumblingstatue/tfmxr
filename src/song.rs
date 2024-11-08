@@ -1,5 +1,6 @@
 use {
     crate::{header::Header, CdbArr, EditBuf, HdbArr, SongIdx, TfmxCtx, MAX_CHANNELS},
+    egui_inspect::derive::Inspect,
     std::cmp::Ordering,
     u32be::U32Be,
 };
@@ -1101,7 +1102,7 @@ pub fn start_song(song: SongIdx, mode: i32, header: &Header, tfmx: &mut TfmxCtx)
     mdb.player_enable = true;
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Inspect)]
 pub struct Cdb {
     macro_run: i8,
     efx_run: i8,
@@ -1203,7 +1204,7 @@ impl Cdb {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Inspect)]
 pub struct Idb {
     cue: [u16; 4usize],
 }
@@ -1214,7 +1215,7 @@ impl Idb {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Inspect)]
 pub struct Mdb {
     pub player_enable: bool,
     end_flag: bool,
@@ -1249,7 +1250,7 @@ impl Mdb {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Inspect)]
 pub struct Pdb {
     pub addr: u32,
     pub num: u8,
@@ -1275,7 +1276,7 @@ impl Pdb {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Inspect)]
 pub struct Pdblk {
     first_pos: u16,
     last_pos: u16,
@@ -1299,7 +1300,7 @@ impl Pdblk {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Inspect)]
 pub struct Hdb {
     pub pos: u32,
     pub delta: u32,
@@ -1309,6 +1310,7 @@ pub struct Hdb {
     pub sample_start: usize,
     pub vol: u8,
     pub mode: u8,
+    #[opaque]
     pub loop_fn: fn(&mut Hdb, &mut CdbArr) -> i32,
     pub cdb_idx: Option<usize>,
 }

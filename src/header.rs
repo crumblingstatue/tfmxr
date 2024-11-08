@@ -1,6 +1,9 @@
-use crate::{MdatLoadError, MAX_CHANNELS, MAX_SONGS, TEXT_ROWS, TEXT_ROW_LEN};
+use {
+    crate::{MdatLoadError, MAX_CHANNELS, MAX_SONGS, TEXT_ROWS, TEXT_ROW_LEN},
+    egui_inspect::derive::Inspect,
+};
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Inspect)]
 pub struct Header {
     pub text: [u8; TEXT_ROWS as usize * TEXT_ROW_LEN as usize],
     pub song_starts: [u16; MAX_SONGS as usize],

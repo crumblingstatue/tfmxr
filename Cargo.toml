@@ -11,6 +11,7 @@ bytemuck = { version = "1.19.0", features = [
 ] }
 thiserror = "2.0"
 log.workspace = true
+egui-inspect.workspace = true
 
 [dev-dependencies]
 anyhow.workspace = true
@@ -32,3 +33,4 @@ clap = { version = "4.5.20", default-features = false, features = ["std", "help"
 console = { version = "0.15.8", default-features = false }
 cpal = "0.15.3"
 log = "0.4.22"
+egui-inspect.git = "https://github.com/crumblingstatue/egui-inspect.git"
