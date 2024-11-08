@@ -340,12 +340,21 @@ impl PlayerBuilder {
 /// TFMX player
 #[derive(Debug, Inspect)]
 pub struct TfmxPlayer {
+    /// Used for resetting the player state when playing a new song.
     pub clean_tfmx: TfmxCtx,
+    /// Main TFMX context
     pub tfmx: TfmxCtx,
+    /// The header of the TFMX mdat file
     pub header: Header,
+    /// Contains the instrument samples.
+    ///
+    /// Usually loaded from a `.smpl` file.
     pub sample_buf: Vec<i8>,
+    /// Index of the currently playing song
     pub song_idx: SongIdx,
+    /// What channels to render when rendering the music
     pub ch_on: [bool; MAX_CHANNELS as usize],
+    /// Whether to keep playing the current song, or go to next
     pub loop_current_song: bool,
 }
 

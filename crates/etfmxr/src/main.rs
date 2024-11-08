@@ -201,7 +201,6 @@ impl eframe::App for EtfmxrApp {
             egui::ScrollArea::vertical()
                 .auto_shrink(false)
                 .show(ui, |ui| {
-                    ui.label("What the fuck");
                     player.inspect_mut(ui, 0);
                 });
         });
