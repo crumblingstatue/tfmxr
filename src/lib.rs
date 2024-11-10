@@ -27,17 +27,18 @@ pub mod header;
 pub mod rendering;
 pub mod song;
 
-use std::{
-    fs::File,
-    io::{Read, Seek, SeekFrom},
-    ops::ControlFlow,
-    path::Path,
+use {
+    egui_inspect::derive::Inspect,
+    header::Header,
+    rendering::{present_output, try_to_makeblock, AudioCtx},
+    song::{Cdb, Hdb, Idb, Mdb, Pdblk},
+    std::{
+        fs::File,
+        io::{Read, Seek, SeekFrom},
+        ops::ControlFlow,
+        path::Path,
+    },
 };
-
-use egui_inspect::derive::Inspect;
-use header::Header;
-use rendering::{present_output, try_to_makeblock, AudioCtx};
-use song::{Cdb, Hdb, Idb, Mdb, Pdblk};
 
 const TEXT_ROW_LEN: u8 = 40;
 const TEXT_ROWS: u8 = 6;

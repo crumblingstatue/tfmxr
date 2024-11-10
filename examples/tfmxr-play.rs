@@ -96,9 +96,7 @@ fn main() {
                 '<' => send.send(Msg::Cmd(PlayerCmd::Prev)).unwrap(),
                 '>' => send.send(Msg::Cmd(PlayerCmd::Next)).unwrap(),
                 'r' => send.send(Msg::Cmd(PlayerCmd::RestartSong)).unwrap(),
-                'l' => send
-                    .send(Msg::Cmd(PlayerCmd::ToggleLoopCurrentSong))
-                    .unwrap(),
+                'l' => send.send(Msg::Cmd(PlayerCmd::ToggleLoopCurrentSong)).unwrap(),
                 'q' => {
                     send.send(Msg::End).unwrap();
                     th_handle.join().unwrap();
@@ -108,8 +106,7 @@ fn main() {
                     send.send(Msg::Cmd(PlayerCmd::ToggleBlend)).unwrap();
                 }
                 '1'..'9' => {
-                    send.send(Msg::Cmd(PlayerCmd::ToggleCh(ch as u8 - b'1')))
-                        .unwrap();
+                    send.send(Msg::Cmd(PlayerCmd::ToggleCh(ch as u8 - b'1'))).unwrap();
                 }
                 _ => {}
             },

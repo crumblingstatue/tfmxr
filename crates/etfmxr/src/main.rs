@@ -198,11 +198,9 @@ impl eframe::App for EtfmxrApp {
                 }
             });
             ui.separator();
-            egui::ScrollArea::vertical()
-                .auto_shrink(false)
-                .show(ui, |ui| {
-                    player.inspect_mut(ui, 0);
-                });
+            egui::ScrollArea::vertical().auto_shrink(false).show(ui, |ui| {
+                player.inspect_mut(ui, 0);
+            });
         });
         self.file_dialog.update(ctx);
         if let Some(path) = self.file_dialog.take_selected() {
