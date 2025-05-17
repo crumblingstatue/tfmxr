@@ -1,11 +1,11 @@
 [package]
 name = "etfmxr"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-eframe = "0.29.1"
-egui-file-dialog = "0.7.0"
+eframe = "0.31.1"
+egui-file-dialog = "0.10.0"
 anyhow.workspace = true
 cpal.workspace = true
 env_logger.workspace = true

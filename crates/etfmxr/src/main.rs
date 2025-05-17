@@ -1,17 +1,17 @@
 use {
     clap::Parser,
     cpal::{
-        traits::{DeviceTrait, HostTrait, StreamTrait},
         BufferSize, SampleRate, StreamConfig,
+        traits::{DeviceTrait, HostTrait, StreamTrait},
     },
     eframe::egui,
     egui_file_dialog::FileDialog,
     std::{
         ops::ControlFlow,
         sync::{
+            Arc, Mutex,
             atomic::{AtomicBool, Ordering},
             mpsc::Sender,
-            Arc, Mutex,
         },
     },
     tfmxr::{PlayerBuilder, PlayerCmd},
@@ -157,7 +157,7 @@ impl eframe::App for EtfmxrApp {
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             let (ctrl, key_o) = ui.input(|inp| (inp.modifiers.ctrl, inp.key_pressed(egui::Key::O)));
             if ui.button("Open file").clicked() || (ctrl && key_o) {
-                self.file_dialog.select_file();
+                self.file_dialog.pick_file();
             }
             let status = self.player_status.lock().unwrap();
             let active_track = status.current_song_idx;
@@ -166,10 +166,10 @@ impl eframe::App for EtfmxrApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| match self.pl_msg_send.as_mut() {
                 Some(pl_msg_send) => {
-                    if ui.button("⏮").on_hover_text("Previous track").clicked() {
-                        if let Err(e) = pl_msg_send.send(PlayerCmd::Prev) {
-                            log::error!("Failed to send message ({:?}) to player: {e}", e.0);
-                        }
+                    if ui.button("⏮").on_hover_text("Previous track").clicked()
+                        && let Err(e) = pl_msg_send.send(PlayerCmd::Prev)
+                    {
+                        log::error!("Failed to send message ({:?}) to player: {e}", e.0);
                     }
                     let label = if self.cpal_stream.is_some() {
                         "⏹"
@@ -179,10 +179,10 @@ impl eframe::App for EtfmxrApp {
                     if ui.button(label).clicked() {
                         self.stop_playback.store(true, Ordering::Relaxed);
                     }
-                    if ui.button("⏭").on_hover_text("Next track").clicked() {
-                        if let Err(e) = pl_msg_send.send(PlayerCmd::Next) {
-                            log::error!("Failed to send message ({:?}) to player: {e}", e.0);
-                        }
+                    if ui.button("⏭").on_hover_text("Next track").clicked()
+                        && let Err(e) = pl_msg_send.send(PlayerCmd::Next)
+                    {
+                        log::error!("Failed to send message ({:?}) to player: {e}", e.0);
                     }
                 }
                 None => {
@@ -191,7 +191,7 @@ impl eframe::App for EtfmxrApp {
             });
         });
         self.file_dialog.update(ctx);
-        if let Some(path) = self.file_dialog.take_selected() {
+        if let Some(path) = self.file_dialog.take_picked() {
             if let Some(parent) = path.parent() {
                 self.file_dialog.config_mut().initial_directory = parent.to_owned();
             }
