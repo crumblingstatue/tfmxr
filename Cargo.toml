@@ -5,7 +5,7 @@ edition = "2024"
 license = "GPL-2.0"
 
 [dependencies]
-bytemuck = { version = "1.19.0", features = [
+bytemuck = { version = "1.23.0", features = [
     "latest_stable_rust",
     "extern_crate_alloc",
 ] }
