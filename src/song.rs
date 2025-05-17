@@ -1,5 +1,5 @@
 use {
-    crate::{header::Header, CdbArr, EditBuf, HdbArr, SongIdx, TfmxCtx, MAX_CHANNELS},
+    crate::{CdbArr, EditBuf, HdbArr, MAX_CHANNELS, SongIdx, TfmxCtx, header::Header},
     std::cmp::Ordering,
     u32be::U32Be,
 };
@@ -836,7 +836,7 @@ fn do_effects(c: &mut Cdb, mdb: &mut Mdb) {
     }
 }
 
-fn do_fade(sp: i32, dv: i32, mdb: &mut Mdb) {
+const fn do_fade(sp: i32, dv: i32, mdb: &mut Mdb) {
     mdb.fade_dest = dv as i8;
     mdb.fade_reset = sp as i8;
     mdb.fade_time = sp as i8;
@@ -1012,7 +1012,7 @@ pub(crate) fn channel_off(cdb_idx: usize, cdb_arr: &mut CdbArr, hdb_arr: &mut Hd
     }
 }
 
-pub(crate) fn loop_off(_hdb: &mut Hdb, _cdb_arr: &mut CdbArr) -> i32 {
+pub(crate) const fn loop_off(_hdb: &mut Hdb, _cdb_arr: &mut CdbArr) -> i32 {
     1
 }
 

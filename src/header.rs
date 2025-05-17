@@ -1,4 +1,4 @@
-use crate::{MdatLoadError, MAX_CHANNELS, MAX_SONGS, TEXT_ROWS, TEXT_ROW_LEN};
+use crate::{MAX_CHANNELS, MAX_SONGS, MdatLoadError, TEXT_ROW_LEN, TEXT_ROWS};
 
 #[derive(Clone, Copy, Debug)]
 pub struct Header {

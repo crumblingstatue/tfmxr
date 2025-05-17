@@ -35,7 +35,7 @@ use std::{
 };
 
 use header::Header;
-use rendering::{present_output, try_to_makeblock, AudioCtx};
+use rendering::{AudioCtx, present_output, try_to_makeblock};
 use song::{Cdb, Hdb, Idb, Mdb, Pdblk};
 
 const TEXT_ROW_LEN: u8 = 40;
@@ -192,11 +192,7 @@ trait BoolExt {
 
 impl BoolExt for bool {
     fn on_off(self) -> &'static str {
-        if self {
-            "on"
-        } else {
-            "off"
-        }
+        if self { "on" } else { "off" }
     }
 }
 
@@ -302,12 +298,12 @@ impl PlayerBuilder {
         self
     }
     /// Which subsong to start with
-    pub fn starting_subsong(&mut self, idx: u8) -> &mut Self {
+    pub const fn starting_subsong(&mut self, idx: u8) -> &mut Self {
         self.song_index = idx;
         self
     }
     /// Specify the sample rate at which we render the song
-    pub fn sample_rate(&mut self, rate: u32) -> &mut Self {
+    pub const fn sample_rate(&mut self, rate: u32) -> &mut Self {
         self.sample_rate = rate;
         self
     }

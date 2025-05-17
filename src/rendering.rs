@@ -1,7 +1,7 @@
 use {
     crate::{
-        header::Header, song::tfmx_irq_in, CdbArr, Hdb, NewDataCtlFlow, TfmxCtx, TfmxPlayer,
-        MAX_CHANNELS,
+        CdbArr, Hdb, MAX_CHANNELS, NewDataCtlFlow, TfmxCtx, TfmxPlayer, header::Header,
+        song::tfmx_irq_in,
     },
     std::ops::ControlFlow,
 };
@@ -39,7 +39,7 @@ impl AudioCtx {
         }
     }
 
-    pub(crate) fn toggle_blend(&mut self) {
+    pub(crate) const fn toggle_blend(&mut self) {
         self.blend ^= true;
     }
 
@@ -209,7 +209,6 @@ const fn available_sound_data(ctx: &AudioCtx) -> usize {
     l % BUFSIZE
 }
 
-#[must_use]
 pub(crate) fn present_output(
     player: &mut TfmxPlayer,
     ctx: &mut AudioCtx,
